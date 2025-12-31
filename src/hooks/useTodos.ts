@@ -1,26 +1,41 @@
-import type { Todo } from "../types/todo";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { addTodo, toggleTodo } from "../store/todosSlice";
 
-// Données initiales simulées
-const initialTodos: Todo[] = [
-  { id: "1", title: "Apprendre React Hook Form", completed: false },
-  { id: "2", title: "Comprendre Zod", completed: true },
-  { id: "3", title: "Maîtriser React Query", completed: false },
-];
 
-// Simulation d'un fetch asynchrone
-const fetchTodos = (): Promise<Todo[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(initialTodos);
-    }, 500);
-  });
+export const useTodos = () => {
+  const todos = useAppSelector((state) => state.todos.items);
+
+  return {
+    data: todos,
+    isLoading: false,
+    isError: false,
+  };
 };
 
-// Hook pour récupérer les todos
-export const useTodos = () => {};
 
-// Hook pour ajouter un todo
-export const useAddTodo = () => {}; 
+export const useAddTodo = () => {
+  const dispatch = useAppDispatch();
 
-// Hook pour basculer l'état completed d'un todo
-export const useToggleTodo = () => {};
+  return {
+    mutate: (title: string) => {
+      const newTodo = {
+        id: Date.now().toString(),
+        title,
+        completed: false,
+      };
+      dispatch(addTodo(newTodo));
+    },
+    isPending: false,
+  };
+};
+
+
+export const useToggleTodo = () => {
+  const dispatch = useAppDispatch();
+
+  return {
+    mutate: (id: string) => {
+      dispatch(toggleTodo(id));
+    },
+  };
+};

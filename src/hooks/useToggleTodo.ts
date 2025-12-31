@@ -1,16 +1,10 @@
-export const useToggleTodo = () => {
-  const queryClient = useQueryClient();
+import { useAppDispatch } from "../store/hooks";
+import { toggleTodo } from "../store/todosSlice";
 
-  return useMutation({
-    mutationFn: async (id: string) => {
-      return id;
-    },
-    onSuccess: (id) => {
-      queryClient.setQueryData<Todo[]>(['todo'], (oldTodos) => {
-        return oldTodos?.map((todo) =>
-          todo.id === id ? { ...todo, completed: !todo.completed } : todo
-        );
-      });
-    },
-  });
-};import { useMutation, useQueryClient } from "@tanstack/react-query";
+export const useToggleTodo = () => {
+  const dispatch = useAppDispatch();
+
+  return (id: string) => {
+    dispatch(toggleTodo(id));
+  };
+};
